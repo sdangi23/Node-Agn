@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    
+    <title>check
+    </title>
+</head>
+<body>
+
+    <form id="formDiv">
+            <input id="inputId" placeholder="Enter Your Employee Id"/>
+            <button id="getTokenbtn">Get Your Token</button>
+            <br>
+            <input id="inputToken" placeholder="Enter Your Token" />
+            <button id="getDetailBtn"> Get Employee Details </button>
+    </form>
+
+</body>
+<script>
+        
+    document.getElementById('getTokenbtn').addEventListener( 'click' , async(e)=>{
+        e.preventDefault();
+        const inputId = document.getElementById('inputId').value;
+        try{
+            const res = await axios.post('http://localhost:3000/getToken' , {id: inputId});
+            const tokenDiv = document.createElement('div');
+            tokenDiv.innerHTML = `<div> Note Down Your Token for further Queries : ${res.data.token} </div>`
+            document.getElementById('formDiv').appendChild(tokenDiv);
+             alert(res.data.message);
+        }catch(e){
+            alert('Network Failure');
+        }
+    })
+
+    document.getElementById('getDetailBtn').addEventListener( 'click' , async(e) => {
+        e.preventDefault();
+        const inputToken = document.getElementById('inputToken').value;
+        try{
+            const res = await axios.get('http://localhost:3000/getemployees' , { headers: {"Authorization" : inputToken}});
+            
+            res.data.employeeList.forEach( (emp)=> {
+                const tokenDiv = document.createElement('div');
+                tokenDiv.innerHTML = `<div> Employee Details are : ${emp.name} : ${emp.salary} : ${emp.contact} : ${emp.email} </div>`
+                document.getElementById('formDiv').appendChild(tokenDiv);
+            })
+            alert(res.data.message);
+        }catch (e){
+            alert('Network Failure');
+        }
+    })
+
+</script>
+</html>
